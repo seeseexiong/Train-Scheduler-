@@ -5,68 +5,203 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Train Scheduler</title>
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css">
+      <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- LINK TO FIREBASE GOES HERE -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+
 </head>
 <body>
-    <!-- =========================== HEADER goes here ================================-->
-    <header><h1>Train Schedule</h1></header>
-    <!-- =========================== Current Train Schedule ===========================-->
-    <div id="table">
-    <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Train Name</th>
-                <th scope="col">Destination</th>
-                <th scope="col">Frequency (min)</th>
-                <th scope="col">Next Arrival</th>
-                <th scope="col">Minutes Away</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-            </tbody>
-    </table>
+  <div class="container">
+
+    <!-- Jumbotron -->
+    <div class="jumbotron">
+      <h1 class="text-center">Train Schedule</h1>
+      <p>Current Time: <span id="currentTime"></span></p>
     </div>
-     <!-- ========================== Add Train ========================================-->
-     <form>
-         <!-- this is from bootstrap, it's in email form -->
-            <div class="form-group">
-              <label for="exampleInputEmail1"><b>Train Name</b></label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-              <label for="exampleInputEmail1"><b>Destination</b></label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-              <label for="exampleInputEmail1"><b>First Train Time (HH:mm - military time)</b></label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-              <label for="exampleInputEmail1"><b>Frequency (min)</b></label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            </div>
+
+    <div class="row">
+      <!-- Wells for displaying all users -->
+      <div class="col-lg-12">
+              <table class="table">
+              <thead>
+                  <tr>
+                    <th scope="col">Train Name</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Frequency (min)</th>
+                    <th scope="col">Next Arrival</th>
+                    <th scope="col">Minuts Away</th>
+                  </tr>
+               </thead>
+               </table>
+          </div> <br>
+          
+          <div class="card-body">
             
-            
-     <!-- BootStrap external links -->
-     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+            <div id="full-train-list"></div>
+          </div>
+        </div>
+      </div>
+      <!-- list of current train infos-->
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            Add New Train
+          </div>
+
+          <div class="card-body">
+
+            <!-- INPUT form for adding new train info-->
+            <form role="form">
+              <div class="form-group row">
+                <label for="train-name-input">Train Name:</label>
+                <input class="form-control" id="train-name-input" type="text">
+              </div>
+              
+              <div class="form-group row">
+                <label for="destination-input">Destination:</label>
+                <input class="form-control" id="destination-input" type="text">
+              </div>
+
+              <div class="form-group row">
+                <label for="first-train-input">First Train Time: (HH:mm)</label>
+                <input class="form-control" id="first-train-input" type="text">
+              </div>
+
+              <div class="form-group row">
+                <label for="freq-input">Frequency (min)</label>
+                <input  class="form-control" id="freq-input" type="text">
+              </div>
+
+              <button class="btn btn-default" id="add-train" type="submit">Submit</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- MomentJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+
+  <!-- Script -->
+  <script>
+    
+
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCJDvXDv53T93wlHQ-FbTB0JNKIapD-sWM",
+      authDomain: "train-schedule-62158.firebaseapp.com",
+      databaseURL: "https://train-schedule-62158.firebaseio.com",
+      projectId: "train-schedule-62158",
+      storageBucket: "train-schedule-62158.appspot.com",
+      messagingSenderId: "454140441990"
+    };
+
+    firebase.initializeApp(config);
+
+    var database = firebase.database();
+
+    // Initial Values
+    var TrainName= "";
+    var Destination = "";
+    var FristTrain = 0;
+    var Freq = "";
+
+    //=================================================
+    
+
+    
+    //====================================================
+
+    // Capture Button Click
+    $("#add-train").on("click", function(event) {
+      event.preventDefault();
+
+      // YOUR TASK!!!
+      // Code in the logic for storing and retrieving the most recent user.
+      // Don't forget to provide initial data to your Firebase database.
+      TrainName = $("#train-name-input").val().trim();
+      Destination = $("#destination-input").val().trim();
+      FirstTrain = $("#first-train-input").val().trim();
+      Freq = $("#freq-input").val().trim();
+
+      // Code for the push
+      database.ref().push({
+
+        TrainName: TrainName,
+        Destination: Destination,
+        FirstTrain: FirstTrain,
+        Freq: Freq,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
+      });
+    });
+
+    // Firebase watcher + initial loader HINT: This code behaves similarly to .on("value")
+    database.ref().on("child_added", function(childSnapshot) {
+
+      // full list of items to print to the full-train-list(DOM)
+      $("#full-train-list").append("<table class='table'><tr><td class='display-train-name'> " +
+        childSnapshot.val().TrainName +
+        " </td><td class='display-destination'> " + childSnapshot.val().Destination +
+        " </td><td class='display-freq'> " + childSnapshot.val().Freq +
+        " </td><td class='dispaly-firstTrain'> " + childSnapshot.val().FirstTrain +
+        " </td><td class='dispaly-timeAway'> " + "minutes away" +
+        " </td></table>");
+
+      // Handle the errors
+    }, function(errorObject) {
+      console.log("Errors handled: " + errorObject.code);
+    });
+    
+    
+   
+    $("#currentTime").append(moment(currentTime).format("HH:mm"));
+    
+    FirstTrain = $("#first-train-input").val().trim();
+    Freq = $("#freq-input").val().trim();
+
+    var firstTraiTime = moment(FirstTrain).formate("HH:mm");
+    var freqTime = moment(Freq).formate("HH:mm");
+
+    //First Time (pushed back 1 year to make sure it comes before current time)
+    var firstTimeConverted = moment(firstTraiTime, "HH:mm").subtract(1, "years");
+    
+    //Current time
+    var currentTime = moment();
+    
+    // Difference between the times
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+
+    // Time apart (remainder)
+    var tRemainder = diffTime % tFrequency;
+
+    // Minute Until Train
+    var tMinutesTillTrain = tFrequency - tRemainder;
+
+    // Next Train
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+
+    $("#dispaly-timeAway").text(nextTrain);
+
+
+
+
+
+    //NEED TO DO
+    //figure out how to log nextTrain time to DOM under minutes away
+
+   
+
+
+     
+
+
+  </script>
 </body>
 </html>

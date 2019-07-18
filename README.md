@@ -4,7 +4,7 @@ This application was build for administrator use only.  The administrator can ad
 ## Getting Started
 Click [EDIT](https://seeseexiong.github.io/Train-Scheduler-/) Train Schedule to get started!
 
-![Alt Text](*paste image URL here*)
+![Alt Text](https://github.com/seeseexiong/Train-Scheduler-/blob/master/assets/images/Train%20Sch.png?raw=true)
 
 ## Built With
 * HTML/CSS/Bootstrap - Built the wireframe

@@ -18,19 +18,16 @@
 
   <div class="container">
     <!-- Jumbotron -->
-    <div class="jumbotron">
+    <div class="jumbotron p-3 mb-2 bg-dark text-white">
       <h1 class="text-center">Train Schedule</h1>
-      <p>Current Millitary Time: <span id="mCurrentTime"></span></p>
-      <p>Current Time: <span id="currentTime"></span></p>
-
+      <p id="time">Current Time: <span id="currentTime"></span></p>
     </div>
 
     <div class="row">
-
       <!-- * * * * * * Adminstrator Add New Train * * * * * * * * * * -->
       <div class="col-lg-3">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header p-3 mb-2 bg-dark text-white">
             Add New Train
           </div>
           
@@ -49,7 +46,7 @@
             
               <div class="form-group row">
                 <label for="first-train-input">First Train Time:</label>
-                <input class="form-control" id="first-train-input" type="text" placeholder="00:00">
+                <input class="form-control" id="first-train-input" type="text" placeholder="00:00 AM/PM">
               </div>
             
               <div class="form-group row">
@@ -57,7 +54,7 @@
                 <input  class="form-control" id="freq-input" type="text">
               </div>
             
-              <button class="btn btn-secondary" id="add-train" type="submit">Submit</button>
+              <button class="btn btn-primary" id="add-train" type="submit">Submit</button>
             </form>
 
           </div>
@@ -67,13 +64,16 @@
       <!-- * * * * * * Table of the Schedule  * * * * * * * * * * * * -->
       <div class="col-lg-9">
         <table class="table">
-          <thead>
+          <thead class="p-3 mb-2 bg-secondary text-white">
             <tr>
               <th scope="col">Train Name</th>
               <th scope="col">Destination</th>
+              <th scope="col">1st Train</th>
               <th scope="col">Frequency (min)</th>
               <th scope="col">Next Arrival</th>
               <th scope="col">Minuts Away</th>
+              <th scope="col"></th>
+
             </tr>
           </thead>
 
@@ -92,7 +92,7 @@
   <!-- MomentJS -->
   <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
   <!-- External link to my JS file -->
-  <script src="assets/javascript/javascript.js"></script>
+  <script src="assets/javascript/main.js"></script>
 
 </body>
 </html>

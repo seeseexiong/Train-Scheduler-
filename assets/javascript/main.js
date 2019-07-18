@@ -1,99 +1,100 @@
- // Initialize Firebase
- var config = {
-  apiKey: "AIzaSyCJDvXDv53T93wlHQ-FbTB0JNKIapD-sWM",
-  authDomain: "train-schedule-62158.firebaseapp.com",
-  databaseURL: "https://train-schedule-62158.firebaseio.com",
-  projectId: "train-schedule-62158",
-  storageBucket: "train-schedule-62158.appspot.com",
-  messagingSenderId: "454140441990"
+// Initialize Firebase
+var firebaseConfig = {
+    apiKey: "AIzaSyCJDvXDv53T93wlHQ-FbTB0JNKIapD-sWM",
+    authDomain: "train-schedule-62158.firebaseapp.com",
+    databaseURL: "https://train-schedule-62158.firebaseio.com",
+    projectId: "train-schedule-62158",
+    storageBucket: "train-schedule-62158.appspot.com",
+    messagingSenderId: "454140441990",
+    appId: "1:454140441990:web:797577c4ccee5b1a"
 };
-
-firebase.initializeApp(config);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 var database = firebase.database();
-
 // Initial Values
-var TrainName= "";
+var TrainName   = "";
 var Destination = "";
-var FristTrain = 0;
-var Freq = "";
-
+var FirstTrain  = "";
+var Freq        = 0;
+var currentTime = moment().format("LT")
 //=================================================
-
-
+  
+//Display current time on top of the application   
+$("#currentTime").text(currentTime);
 
 //====================================================
 
-// Capture Button Click
+// The click event handler tiggers saving the data on to Firebase database
 $("#add-train").on("click", function(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  // YOUR TASK!!!
-  // Code in the logic for storing and retrieving the most recent user.
-  // Don't forget to provide initial data to your Firebase database.
-  TrainName = $("#train-name-input").val().trim();
-  Destination = $("#destination-input").val().trim();
-  FirstTrain = $("#first-train-input").val().trim();
-  Freq = $("#freq-input").val().trim();
+    //grab user's inputs
+    TrainName = $("#train-name-input").val().trim();
+    Destination = $("#destination-input").val().trim();
+    FirstTrain = $("#first-train-input").val().trim();
+    Freq = $("#freq-input").val().trim();
 
-  // Code for the push
-  database.ref().push({
+    // Save the values/data into the root folder of Firebase
+    // We will use the push method to avoid replacing old data
+    database.ref().push({
+        TrainName: TrainName,
+        Destination: Destination,
+        FirstTrain: FirstTrain,
+        Freq: Freq,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
+    });
 
-    TrainName: TrainName,
-    Destination: Destination,
-    FirstTrain: FirstTrain,
-    Freq: Freq,
-    dateAdded: firebase.database.ServerValue.TIMESTAMP
-  });
+    // Clear input feilds
+    $("#train-name-input").val("")
+    $("#destination-input").val("")
+    $("#first-train-input").val("")
+    $("#freq-input").val("")
+
 });
 
-// Firebase watcher + initial loader HINT: This code behaves similarly to .on("value")
+//====================================================
+
+// Firebase listens for new data and then display them in the table's body
 database.ref().on("child_added", function(childSnapshot) {
+    FirstTrain = childSnapshot.val().FirstTrain
 
-  // full list of items to print to the full-train-list(DOM)
-  $("#full-train-list").append("<table class='table'><tr><td class='display-train-name'> " +
-    childSnapshot.val().TrainName +
-    " </td><td class='display-destination'> " + childSnapshot.val().Destination +
-    " </td><td class='display-freq'> " + childSnapshot.val().Freq +
-    " </td><td class='dispaly-firstTrain'> " + childSnapshot.val().FirstTrain +
-    " </td><td class='dispaly-timeAway'> " + "minutes away" +
-    " </td></table>");
+    // First Time (pushed back 1 year to make sure it comes before current time) .. because 
 
-  // Handle the errors
+    var firstTimeConverted = moment(FirstTrain, "HH:mm A").subtract(1, "years");
+
+    // Difference between the times
+    var diffTime = moment().diff(moment(firstTimeConverted), 'minutes')
+
+    Freq = childSnapshot.val().Freq;
+
+    // Time apart (remainder)
+    var tRemainder = diffTime % Freq;
+
+    // Minuites until train
+    var tMinutesTillTrain = Freq - tRemainder;
+
+    // Next Train
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+
+    //====================================================
+
+    // create a new row and print to the table's body with id called "full-train-list"
+    var newRow = $("<tr>").append(
+        $('<td>').text(childSnapshot.val().TrainName),
+        $('<td>').text(childSnapshot.val().Destination),
+        $('<td>').text(childSnapshot.val().FirstTrain),
+        $('<td>').text(childSnapshot.val().Freq),
+        $('<td>').text(moment(nextTrain).format('LT')),
+        $('<td>').text(tMinutesTillTrain)
+    );
+
+    $("#full-train-list").append(newRow);
+
+    // Handle the errors
 }, function(errorObject) {
-  console.log("Errors handled: " + errorObject.code);
+    console.log("Errors handled: " + errorObject.code);
 });
 
 
-
-$("#currentTime").append(moment(currentTime).format("HH:mm"));
-
-FirstTrain = $("#first-train-input").val().trim();
-Freq = $("#freq-input").val().trim();
-
-var firstTraiTime = moment(FirstTrain).formate("HH:mm")
-var freqTime = moment(Freq).formate("HH:mm")
-
-//First Time (pushed back 1 year to make sure it comes before current time)
-var firstTimeConverted = moment(firstTraiTime, "HH:mm").subtract(1, "years");
-console.log(firstTimeConverted);
-
-//Current time
-var currentTime = moment();
-console.log(moment(currentTime).format("HH:mm"));
-
-// Difference between the times
-var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-console.log("DIFFERENCE IN TIME: " + diffTime);
-
-// Time apart (remainder)
-var tRemainder = diffTime % tFrequency;
-console.log(tRemainder);
-
-// Minute Until Train
-var tMinutesTillTrain = tFrequency - tRemainder;
-console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
-
-// Next Train
-var nextTrain = moment().add(tMinutesTillTrain, "minutes");
-console.log("ARRIVAL TIME: " + moment(nextTrain).format("HH:mm"));
+   

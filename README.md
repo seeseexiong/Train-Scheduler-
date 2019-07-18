@@ -1,5 +1,5 @@
 # Train-Scheduler
-This application was build for administrator use only.  The administrator can add new train schedules by entering information and submitting them on the left-hand side.  Once submitted, the data are store remotely in the database - thus, with internet access the administrator can use this app from any computer.
+This application is for administrator use only.  The administrator can add new train schedules by entering information and submitting them on the left-hand side.  Once submitted, the data are store remotely in the database - thus, with internet access the administrator can use this app from any computer.
 
 On the right-hand side, it display all the available train schedules.  It shows the times of:
   *the first train
